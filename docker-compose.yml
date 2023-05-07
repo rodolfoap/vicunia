@@ -1,0 +1,27 @@
+version: "3.3"
+networks:
+  vicunet:
+    name: vicunet
+    driver: bridge
+
+services:
+  vicunia:
+    container_name: vicunia
+    image: vicunia
+    environment:
+      - PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:512
+      # CLI_ARGS=--model anon8231489123_vicuna-13b-GPTQ-4bit-128g --wbits 4 --groupsize 128 --auto-devices --model_type llama --pre_layer 20
+    ports:
+      - 8080:8080
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./models/:/fastchat/models/
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0']
+              capabilities: [gpu]
+
